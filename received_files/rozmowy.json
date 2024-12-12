@@ -1,0 +1,27 @@
+[
+    {
+        "room": "f",
+        "sender": "Server",
+        "message": "df dołączył do pokoju."
+    },
+    {
+        "room": "f",
+        "sender": "df",
+        "message": "dsa"
+    },
+    {
+        "room": "f",
+        "sender": "df",
+        "message": "dsa"
+    },
+    {
+        "room": "f",
+        "sender": "Server",
+        "message": "d dołączył do pokoju."
+    },
+    {
+        "room": "f",
+        "sender": "d",
+        "message": "ewq"
+    }
+]
