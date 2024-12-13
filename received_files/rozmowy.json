@@ -23,5 +23,70 @@
         "room": "f",
         "sender": "d",
         "message": "ewq"
+    },
+    {
+        "room": "s",
+        "sender": "Server",
+        "message": "Siemakowicz dołączył do pokoju."
+    },
+    {
+        "room": "s",
+        "sender": "Server",
+        "message": "p dołączył do pokoju."
+    },
+    {
+        "room": "s",
+        "sender": "p",
+        "message": "siema"
+    },
+    {
+        "room": "s",
+        "sender": "p",
+        "message": "siema"
+    },
+    {
+        "room": "s",
+        "sender": "Server",
+        "message": "l dołączył do pokoju."
+    },
+    {
+        "room": "s",
+        "sender": "l",
+        "message": "k"
+    },
+    {
+        "room": "s",
+        "sender": "l",
+        "message": "k"
+    },
+    {
+        "room": "s",
+        "sender": "Server",
+        "message": ",. dołączył do pokoju."
+    },
+    {
+        "room": "s",
+        "sender": ",.",
+        "message": "/.,"
+    },
+    {
+        "room": "s",
+        "sender": ",.",
+        "message": "/.,"
+    },
+    {
+        "room": "s",
+        "sender": "Server",
+        "message": "hj dołączył do pokoju."
+    },
+    {
+        "room": "s",
+        "sender": "hj",
+        "message": "g"
+    },
+    {
+        "room": "s",
+        "sender": "hj",
+        "message": "g"
     }
 ]

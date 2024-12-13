@@ -7,6 +7,7 @@ import base64
 from PIL import Image
 import io
 
+
 class ChatClient(wx.Frame):
     def __init__(self, *args, **kwargs):
         super(ChatClient, self).__init__(*args, **kwargs)
@@ -15,8 +16,8 @@ class ChatClient(wx.Frame):
         self.current_room = None
         self.client_socket = None
         self.connected = False
-        self.selected_color = wx.Colour(0, 0, 0)  # Default color: black
-        self.emoji_list = ["😊", "😂", "😍", "😎", "😢", "😡"]  # Emoji list
+        self.selected_color = wx.Colour(0, 0, 0)
+        self.emoji_list = ["😊", "😂", "😍", "😎", "😢", "😡"]
 
         self.InitUI()
 
@@ -24,25 +25,22 @@ class ChatClient(wx.Frame):
         panel = wx.Panel(self)
         vbox = wx.BoxSizer(wx.VERTICAL)
 
-
         self.chat_area = wx.BoxSizer(wx.VERTICAL)
         self.chat_display = wx.ScrolledWindow(panel, style=wx.VSCROLL)
         self.chat_display.SetScrollRate(5, 5)
         self.chat_display.SetSizer(self.chat_area)
         vbox.Add(self.chat_display, proportion=1, flag=wx.EXPAND | wx.ALL, border=5)
 
-
         hbox = wx.BoxSizer(wx.HORIZONTAL)
         self.message_input = wx.TextCtrl(panel)
         send_button = wx.Button(panel, label="Send")
-        send_emoji_button = wx.Button(panel, label="Send Emoji")  # Button for sending emojis
-        send_file_button = wx.Button(panel, label="Send File")  # Button for sending files
+        send_emoji_button = wx.Button(panel, label="Send Emoji")
+        send_file_button = wx.Button(panel, label="Send File")
         hbox.Add(self.message_input, proportion=1, flag=wx.EXPAND)
         hbox.Add(send_button, proportion=0, flag=wx.LEFT, border=5)
         hbox.Add(send_emoji_button, proportion=0, flag=wx.LEFT, border=5)
         hbox.Add(send_file_button, proportion=0, flag=wx.LEFT, border=5)
         vbox.Add(hbox, proportion=0, flag=wx.EXPAND | wx.ALL, border=5)
-
 
         room_box = wx.BoxSizer(wx.HORIZONTAL)
         self.room_list = wx.ListBox(panel)
@@ -50,7 +48,7 @@ class ChatClient(wx.Frame):
         self.create_button = wx.Button(panel, label="Create Room")
         self.exit_button = wx.Button(panel, label="Exit")
         self.color_button = wx.Button(panel, label="Set Color", style=wx.BU_EXACTFIT)
-        self.color_button.Disable()  # Disable color button until user joins a room
+        self.color_button.Disable()
         room_box.Add(self.room_list, proportion=1, flag=wx.EXPAND)
         room_box.Add(self.join_button, proportion=0, flag=wx.LEFT, border=5)
         room_box.Add(self.create_button, proportion=0, flag=wx.LEFT, border=5)
@@ -60,10 +58,9 @@ class ChatClient(wx.Frame):
 
         panel.SetSizer(vbox)
 
-
         send_button.Bind(wx.EVT_BUTTON, self.OnSend)
         send_emoji_button.Bind(wx.EVT_BUTTON, self.OnSendEmoji)
-        send_file_button.Bind(wx.EVT_BUTTON, self.OnSendFile)  # Bind file send button
+        send_file_button.Bind(wx.EVT_BUTTON, self.OnSendFile)
         self.join_button.Bind(wx.EVT_BUTTON, self.OnJoinRoom)
         self.create_button.Bind(wx.EVT_BUTTON, self.OnCreateRoom)
         self.exit_button.Bind(wx.EVT_BUTTON, self.OnExit)
@@ -79,7 +76,6 @@ class ChatClient(wx.Frame):
             self.client_socket.connect((host, port))
             self.connected = True
             threading.Thread(target=self.ReceiveMessages, daemon=True).start()
-
 
             username_dialog = wx.TextEntryDialog(self, "Enter your username:", "Username")
             if username_dialog.ShowModal() == wx.ID_OK:
@@ -120,7 +116,7 @@ class ChatClient(wx.Frame):
         if self.connected:
             selected_room = self.room_list.GetStringSelection()
             if selected_room:
-                room_name = selected_room.split(' ')[0]  # Extract room name
+                room_name = selected_room.split(' ')[0]
                 try:
                     self.client_socket.send(json.dumps({
                         "command": "join",
@@ -128,7 +124,7 @@ class ChatClient(wx.Frame):
                     }).encode('utf-8'))
                     self.current_room = room_name
                     self.DisplayText(f"[INFO] You joined room: {room_name}")
-                    self.color_button.Enable()  # Enable color button after joining room
+                    self.color_button.Enable()
                     self.join_button.Hide()
                     self.create_button.Hide()
                     self.exit_button.SetLabel("Exit Room")
@@ -146,15 +142,15 @@ class ChatClient(wx.Frame):
                     "room": self.current_room,
                     "message": message
                 }).encode('utf-8'))
-                # Display the message locally
-                self.DisplayText(f"[{self.current_room}] {self.username}: {message}")
-                self.SaveMessageToFile(self.current_room, self.username, message)  # Save to file
+
+                # self.DisplayText(f"[{self.current_room}] {self.username}: {message}")
+                self.SaveMessageToFile(self.current_room, self.username, message)
                 self.message_input.Clear()
             except Exception as e:
                 wx.MessageBox(f"Error sending message: {e}", "Error", wx.OK | wx.ICON_ERROR)
 
     def SaveMessageToFile(self, room, sender, message):
-        """Save the chat message to a JSON file."""
+
         message_data = {"room": room, "sender": sender, "message": message}
         file_path = "received_files/rozmowy.json"
 
@@ -171,16 +167,18 @@ class ChatClient(wx.Frame):
 
         with open(file_path, "w", encoding="utf-8") as f:
             json.dump(chat_history, f, ensure_ascii=False, indent=4)
+
     def OnSendEmoji(self, event):
         emoji_dialog = wx.SingleChoiceDialog(self, "Choose an emoji:", "Emoticons", self.emoji_list)
         if emoji_dialog.ShowModal() == wx.ID_OK:
             emoji = emoji_dialog.GetStringSelection()
             if emoji:
-                self.message_input.AppendText(emoji)  # Add the selected emoji to the input
+                self.message_input.AppendText(emoji)
 
     def OnSendFile(self, event):
 
-        with wx.FileDialog(self, "Select a file", wildcard="All files (*.*)|*.*", style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as file_dialog:
+        with wx.FileDialog(self, "Select a file", wildcard="All files (*.*)|*.*",
+                           style=wx.FD_OPEN | wx.FD_FILE_MUST_EXIST) as file_dialog:
             if file_dialog.ShowModal() == wx.ID_OK:
                 file_path = file_dialog.GetPath()
                 try:
@@ -197,9 +195,9 @@ class ChatClient(wx.Frame):
                     wx.MessageBox(f"Error sending file: {e}", "Error", wx.OK | wx.ICON_ERROR)
 
     def HandleFileResponse(self, file_name, file_data):
-        """Handle received file."""
-        file_data = base64.b64decode(file_data)  # Decode the file data
-        file_path = os.path.join(os.getcwd(), file_name)  # Save to current working directory
+
+        file_data = base64.b64decode(file_data)
+        file_path = os.path.join(os.getcwd(), file_name)
         try:
             with open(file_path, "wb") as file:
                 file.write(file_data)
@@ -209,11 +207,11 @@ class ChatClient(wx.Frame):
 
     def DisplayText(self, text):
         text_label = wx.StaticText(self.chat_display, label=text)
-        text_label.SetForegroundColour(self.selected_color)  # Set text color
+        text_label.SetForegroundColour(self.selected_color)
         self.chat_area.Add(text_label, flag=wx.LEFT | wx.TOP, border=5)
-        self.chat_display.FitInside()  # Aktualizacja rozmiaru scrollowanego okna
+        self.chat_display.FitInside()
         self.chat_display.Layout()
-        self.chat_display.Scroll(-1, -1)  # Automatyczne przewinięcie na dół
+        self.chat_display.Scroll(-1, -1)
 
     def UpdateRoomList(self, rooms_info):
         self.room_list.Clear()
@@ -241,7 +239,6 @@ class ChatClient(wx.Frame):
 
         try:
             if self.current_room:
-
                 self.client_socket.send(json.dumps({
                     "command": "exit_room",
                     "room": self.current_room
@@ -255,6 +252,7 @@ class ChatClient(wx.Frame):
         finally:
 
             self.Destroy()
+
     def OnSetColor(self, event):
         color_data = wx.ColourData()
         dialog = wx.ColourDialog(self, color_data)
@@ -262,20 +260,18 @@ class ChatClient(wx.Frame):
             color = dialog.GetColourData().GetColour()
             self.selected_color = color
 
+
 def send_username_to_server(username):
 
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     client_socket.connect(('127.0.0.1', 22345))
 
-
     username_data = json.dumps({"username": username}).encode('utf-8')
     client_socket.send(username_data)
-
 
     response = json.loads(client_socket.recv(1024).decode('utf-8'))
     print(response)
     client_socket.close()
-
 
 
 send_username_to_server("TestUser")

@@ -2,7 +2,7 @@ import socket
 import threading
 import json
 import os
-import base64
+
 
 rooms = {}
 clients = {}
@@ -28,13 +28,13 @@ def broadcast_message(room, message, sender, is_image=False, file_data=None, fil
         if client['room'] == room:
             try:
                 msg_data = {
-                    "type": "message" if not is_image else "image",  # Message or image type
+                    "type": "message" if not is_image else "image",
                     "room": room,
                     "sender": sender,
-                    "message": message if not is_image else "",  # Text message
-                    "image": message if is_image else "",  # Image or empty
-                    "file_name": file_name if file_data else "",  # File name for download
-                    "file_data": file_data if file_data else "",  # Base64 encoded file data
+                    "message": message if not is_image else "",
+                    "image": message if is_image else "",
+                    "file_name": file_name if file_data else "",
+                    "file_data": file_data if file_data else "",
                 }
                 client['socket'].send(json.dumps(msg_data).encode('utf-8'))
             except Exception as e:
@@ -44,11 +44,11 @@ def broadcast_message(room, message, sender, is_image=False, file_data=None, fil
 def handle_client(client_socket, client_address):
     username = None
     try:
-        # Receiving the username from the client
+
         data = json.loads(client_socket.recv(1024).decode('utf-8'))
         username = data.get("username")
 
-        # Check if the username is empty or already taken
+        
         if not username or username in clients:
             client_socket.send(
                 json.dumps({"type": "error", "message": "Nazwa użytkownika jest pusta lub zajęta."}).encode('utf-8'))
